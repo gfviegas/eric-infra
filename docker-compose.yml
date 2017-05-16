@@ -1,0 +1,44 @@
+version: "2"
+services:
+  front:
+    container_name: eric-front
+    build: ../eric-site/
+    volumes:
+      - ../eric-site/:/var/www/eric-site
+    ports:
+      - "8080:8080"
+  admin:
+    container_name: eric-admin
+    build: ../scout-cms/
+    volumes:
+      - ../scout-cms/:/var/www/scout-cms
+    ports:
+      - "8888:8888"
+  api:
+    container_name: eric-api
+    build: ../eric-api/
+    env_file:
+      - ../eric-api/.env
+    volumes:
+      - ../eric-api/:/var/www/eric-api
+    ports:
+      - "3000:3000"
+    links:
+      - mongo
+  mongo:
+    container_name: eric-mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes_from:
+      - mongo_data
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: "${DB_USER}"
+    #   MONGO_INITDB_ROOT_PASSWORD: "${DB_PASSWORD}"
+    # command: mongod --auth
+  mongo_data:
+    container_name: eric-mongo-data
+    image: tianon/true
+    volumes:
+      - /data/db
+      - ./mongo/backups:/data/backups
