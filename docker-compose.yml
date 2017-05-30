@@ -1,31 +1,68 @@
 version: "2"
 services:
   front:
+    restart: always
     container_name: eric-front
     build: ../eric-site/
     volumes:
       - ../eric-site/:/var/www/eric-site
+    command: >
+      sh -c '
+      if test -d node_modules;
+      then
+        echo node_modules_exists ;
+      else
+        echo node_modules_missing ;
+        cp -a /tmp/node_modules /var/www/eric-site;
+      fi &&
+      yarn run dev
+      '
     ports:
       - "8080:8080"
   admin:
+    restart: always
     container_name: eric-admin
     build: ../scout-cms/
     volumes:
       - ../scout-cms/:/var/www/scout-cms
+    command: >
+      sh -c '
+      if test -d node_modules;
+      then
+        echo node_modules_exists ;
+      else
+        echo node_modules_missing ;
+        cp -a /tmp/node_modules /var/www/scout-cms;
+      fi &&
+      yarn run dev
+      '
     ports:
       - "8888:8888"
   api:
+    restart: always
     container_name: eric-api
     build: ../eric-api/
     env_file:
       - ../eric-api/.env
     volumes:
       - ../eric-api/:/var/www/eric-api
+    command: >
+      sh -c '
+      if test -d node_modules;
+      then
+        echo node_modules_exists ;
+      else
+        echo node_modules_missing ;
+        cp -a /tmp/node_modules /var/www/eric-api;
+      fi &&
+      yarn run dev
+      '
     ports:
       - "3000:3000"
     links:
       - mongo
   mongo:
+    restart: always
     container_name: eric-mongo
     image: mongo
     ports:
@@ -42,3 +79,9 @@ services:
     volumes:
       - /data/db
       - ./mongo/backups:/data/backups
+  # nginx:
+  #   restart: always
+  #   container_name: eric-nginx
+  #   image: nginx
+  #   ports:
+  #     - "80:80"
