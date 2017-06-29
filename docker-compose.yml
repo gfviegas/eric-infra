@@ -77,7 +77,7 @@ services:
     container_name: eric-mongo-data
     image: tianon/true
     volumes:
-      - /data/db
+      - ./mongo/data:/data/db
       - ./mongo/backups:/data/backups
   # nginx:
   #   restart: always
