@@ -1,7 +1,6 @@
 version: "2"
 services:
   front:
-    restart: always
     container_name: eric-front
     build: ../eric-site/
     volumes:
@@ -20,7 +19,6 @@ services:
     ports:
       - "8080:8080"
   admin:
-    restart: always
     container_name: eric-admin
     build: ../scout-cms/
     volumes:
@@ -39,7 +37,6 @@ services:
     ports:
       - "8888:8888"
   api:
-    restart: always
     container_name: eric-api
     build: ../eric-api/
     env_file:
@@ -62,7 +59,6 @@ services:
     links:
       - mongo
   mongo:
-    restart: always
     container_name: eric-mongo
     image: mongo
     ports:
