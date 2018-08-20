@@ -2,61 +2,39 @@ version: "2"
 services:
   front:
     container_name: eric-front
-    build: ../eric-site/
+    image: node:8
+    working_dir: /var/www/app
     volumes:
-      - ../eric-site/:/var/www/eric-site
-    command: >
-      sh -c '
-      if test -d node_modules;
-      then
-        echo node_modules_exists ;
-      else
-        echo node_modules_missing ;
-        cp -a /tmp/node_modules /var/www/eric-site;
-      fi &&
-      yarn run dev
-      '
+      - ../eric-site/:/var/www/app
+      - ../eric-site/node_modules:/var/www/app/node_modules
+    command: bash -c 'yarn && yarn run dev'
     ports:
       - "8080:8080"
   admin:
     container_name: eric-admin
-    build: ../scout-cms/
+    image: node:8
+    working_dir: /var/www/app
     volumes:
-      - ../scout-cms/:/var/www/scout-cms
-    command: >
-      sh -c '
-      if test -d node_modules;
-      then
-        echo node_modules_exists ;
-      else
-        echo node_modules_missing ;
-        cp -a /tmp/node_modules /var/www/scout-cms;
-      fi &&
-      yarn run dev
-      '
+      - ../scout-cms/:/var/www/app
+      - ../scout-cms/node_modules:/var/www/app/node_modules
+    command: bash -c 'yarn && yarn run dev'
     ports:
       - "8888:8888"
   api:
     container_name: eric-api
-    build: ../eric-api/
+    image: node:8
+    working_dir: /var/www/app
     env_file:
       - ../eric-api/.env
     volumes:
-      - ../eric-api/:/var/www/eric-api
-    command: >
-      sh -c '
-      if test -d node_modules;
-      then
-        echo node_modules_exists ;
-      else
-        echo node_modules_missing ;
-        cp -a /tmp/node_modules /var/www/eric-api;
-      fi &&
-      yarn run dev
-      '
+      - ../eric-api/:/var/www/app
+      - ../eric-api/node_modules:/var/www/app/node_modules
+    command: bash -c 'yarn && yarn run dev'
     ports:
       - "3000:3000"
     links:
+      - mongo
+    depends_on:
       - mongo
   mongo:
     container_name: eric-mongo
